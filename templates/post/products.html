@@ -1,0 +1,37 @@
+{% extends "post/base.html" %}
+{% block head %}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-5">
+      {% if all_ingredients %}
+          {% for ingredient in all_ingredients %}
+              <br>
+              <button class="searchbutton" id={{ingredient.id}}>
+              <div class="card" style="max-width: 250px;">
+              <img style="width: 250px; height: 250px;" src={{ingredient.img_url}} alt="ingredient" class="card-img-top">
+              <div class="card-body">
+                  <p class="card-title">Ингредиент -- {{ingredient.productName}}</p>
+                  <p class="card-text">Категория -- {{ingredient.category}}</p>
+              </div>
+              </div>
+              </button>
+              <br>
+      {% endfor %}
+      {% endif %}
+  </div>
+<div class="col-md-7">
+
+</div>
+</div>
+<div class="row">
+  <div class="col-6 col-md-4">.col-6 .col-md-4</div>
+  <div class="col-6 col-md-4">.col-6 .col-md-4</div>
+  <div class="col-6 col-md-4">.col-6 .col-md-4</div>
+</div>
+<div class="row">
+  <div class="col-6">.col-6</div>
+  <div class="col-6">.col-6</div>
+</div>
+{% endblock %}
