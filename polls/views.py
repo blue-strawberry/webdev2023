@@ -188,8 +188,7 @@ class RecipeDetailView(DetailView):
             'post/recipe_detail.html',
             {'object': RecipeDetailView.model}
         )
-
-
+    #first pro
 # def post_search(request):
 #     form = SearchForm()
 #     # cd = form.cleaned_data
