@@ -1,5 +1,6 @@
 from django import forms
-from .models import Comment, Recipe
+from django.contrib import admin
+from .models import Comment, Recipe, Category, Product
 
 
 class EmailPostForm(forms.Form):
@@ -26,3 +27,11 @@ class RecipeCreateForm(forms.ModelForm):
 
 class SearchForm(forms.Form):
     query = forms.CharField()
+
+
+class LoginForm(forms.Form):
+    username = forms.CharField()
+    password = forms.CharField(
+        widget=forms.PasswordInput
+    )
+

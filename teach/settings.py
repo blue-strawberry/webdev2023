@@ -9,10 +9,12 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+from django.urls import reverse_lazy
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -42,7 +44,16 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.sitemaps',
     'haystack',
+    'cart.apps.CartConfig'
 ]
+
+LOGIN_REDIRECT_URL = reverse_lazy('dashboard')
+LOGIN_URL = reverse_lazy('login')
+LOGOUT_URL = reverse_lazy('logout')
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 30
+LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = 'login'
+CART_SESSION_ID = 'cart'
 
 HAYSTACK_CONNECTIONS = {
     'default': {
@@ -68,6 +79,8 @@ EMAIL_HOST_USER = 'nastja@gmail.ru'
 EMAIL_HOST_PASSWORD = 'aleshina'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 
 TEMPLATES = [

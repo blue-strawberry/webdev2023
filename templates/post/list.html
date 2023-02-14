@@ -2,16 +2,6 @@
 {% load blog_tags %}
 {% block title %}My Blog{% endblock %}
 {% block content %}
-{#    <form action="{% url 'polls:search' %}" method="get">#}
-{#        <input name="q" type="text" placeholder="Search...">#}
-{#   </form>#}
-{#    <ul>#}
-{#        {% for city in object_list %}#}
-{#        <li>#}
-{#            {{ city.name }}, {{ city.state }}#}
-{#        </li>#}
-{#        {% endfor %}#}
-{#    </ul>#}
     <h1>My Blog</h1>
     {% for post in posts %}
         <h2>

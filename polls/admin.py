@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Post, Comment, ingredientItem, Recipe
+from .models import Post, Comment, Recipe, Category, Product
 
 
 class PostAdmin(admin.ModelAdmin):
@@ -17,8 +17,21 @@ class CommentAdmin(admin.ModelAdmin):
     list_filter = ('active', 'created', 'updated')
     search_fields = ('name', 'email', 'body')
 
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ['name', 'slug']
+    prepopulated_fields = {'slug': ('name',)}
+admin.site.register(Category, CategoryAdmin)
+
+
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ['name', 'slug', 'price', 'stock', 'available', 'created', 'updated']
+    list_filter = ['available', 'created', 'updated']
+    list_editable = ['price', 'stock', 'available']
+    prepopulated_fields = {'slug': ('name',)}
+admin.site.register(Product, ProductAdmin)
+
 
 admin.site.register(Comment, CommentAdmin)
 admin.site.register(Post, PostAdmin)
-admin.site.register(ingredientItem)
+# admin.site.register(ingredientItem)
 admin.site.register(Recipe)

@@ -14,7 +14,7 @@
     <h6 class="card-subtitle mb-2 text-muted">
       {{ recipe.updated_at|date:"F d, Y" }}
     </h6>
-    <a href="{% url 'polls:recipes-detail' recipe.pk %}" class="card-link">View Recipe</a>
+    <a href="{{ recipe.get_absolute_url }}" class="card-link">View Recipe</a>
   </div>
 </div>
 
