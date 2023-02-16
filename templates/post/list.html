@@ -48,6 +48,18 @@
         <p class="tags">Tags: {{ post.tags.all|join:", " }}</p>
     {% endfor %}
     {% include "pagination.html" with page=posts %}
+{#        <h2>#}
+{#            <a href="{% url 'polls:index' %}">Опрос</a>#}
+{#        </h2>#}
+    {% if latest_question_list %}
+    <ul>
+    {% for question in latest_question_list %}
+        <li><a href="/polls/{{ question.id }}/">{{ question.question_text }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No polls are available.</p>
+{% endif %}
     <div id="sidebar">
     <h2>My blog</h2>
     <p>This is my blog. I've written {% total_posts %} posts so far.</p>

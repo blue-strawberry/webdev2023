@@ -3,13 +3,14 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q, F, Sum
 from django.db.models.functions import ExtractYear, ExtractMonth
 from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse
 from django.views.decorators.http import require_POST
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404, HttpResponseRedirect
 from cart.cart import Cart
 from cart.forms import CartAddProductForm
 from teach import settings
 # from cart.cart import Cart
-from .models import Post, Recipe, Category, Product, ingredientItem, Visual
+from .models import Post, Recipe, Category, Product, ingredientItem, Visual, Question, Choice
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from .forms import CommentForm, RecipeCreateForm, LoginForm
 from django.contrib.auth import authenticate, login
@@ -22,6 +23,7 @@ from .utils import get_year_dict, months, colorPrimary
 
 def post_list(request):
     # ob_list = Post.objects.all()
+    latest_question_list = Question.objects.all()
     search_post = request.GET.get('search')
     visuals = Visual.objects.order_by('index').all()
     if search_post:
@@ -43,7 +45,8 @@ def post_list(request):
             'page': page,
             'posts': posts,
             'section': 'post_list',
-            'visuals': visuals
+            'visuals': visuals,
+            'latest_question_list': latest_question_list
         }
     )
 
@@ -237,13 +240,38 @@ def get_sales_chart(request, year):
         }
     })
 
-# def product_detail(request, id, productName):
-#     product = get_object_or_404(ingredientItem,
-#                                 id=id,
-#                                 slug=productName,)
-#     cart_product_form = CartAddProductForm()
-#     return render(request, 'post/products.html', {
-#         'product': product,
-#         'cart_product_form': cart_product_form}
-#     )
 
+# def index(request):
+#     latest_question_list = Question.objects.all()
+#     output = ', '.join([q.question_text for q in latest_question_list])
+#     return HttpResponse(output)
+
+
+def detail(request, question_id):
+    try:
+        question = Question.objects.get(pk=question_id)
+    except Question.DoesNotExist:
+        raise Http404("Question does not exist")
+    return render(request, 'post/detail_question.html', {'question': question})
+
+
+def vote(request, question_id):
+    question = get_object_or_404(Question, pk=question_id)
+    try:
+        selected_choice = question.choice_set.get(pk=request.POST['choice'])
+    except (KeyError, Choice.DoesNotExist):
+        return render(
+            request,
+            'post/detail_question.html', {
+                'question': question,
+                'error_message': "You didn't select a choice.",
+            })
+    else:
+        selected_choice.votes += 1
+        selected_choice.save()
+        return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
+
+
+def results(request, question_id):
+    question = get_object_or_404(Question, pk=question_id)
+    return render(request, 'post/results.html', {'question': question})
