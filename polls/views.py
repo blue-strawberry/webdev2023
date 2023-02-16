@@ -1,23 +1,29 @@
+from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
+from django.db.models import Q, F, Sum
+from django.db.models.functions import ExtractYear, ExtractMonth
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.decorators.http import require_POST
-
+from django.http import JsonResponse
 from cart.cart import Cart
 from cart.forms import CartAddProductForm
 from teach import settings
 # from cart.cart import Cart
-from .models import Post, Recipe, Category, Product
+from .models import Post, Recipe, Category, Product, ingredientItem, Visual
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from .forms import CommentForm, RecipeCreateForm, LoginForm
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponse
 
 
-@login_required
+# @login_required
+from .utils import get_year_dict, months, colorPrimary
+
+
 def post_list(request):
     # ob_list = Post.objects.all()
     search_post = request.GET.get('search')
+    visuals = Visual.objects.order_by('index').all()
     if search_post:
         posts = Post.objects.filter(Q(title=search_post))
     else:
@@ -36,7 +42,8 @@ def post_list(request):
         {
             'page': page,
             'posts': posts,
-            'section': 'post_list'
+            'section': 'post_list',
+            'visuals': visuals
         }
     )
 
@@ -122,6 +129,7 @@ def cart_add(request, product_id):
                  update_quantity=cd['update'])
     return redirect('cart:cart_detail')
 
+
 def recipe(request):
     recipes = Recipe.objects.all()
     if request.method == 'POST':
@@ -192,6 +200,43 @@ def user_login(request):
         {'form': form}
     )
 
+
+@staff_member_required
+def get_filter_options(request):
+    grouped_purchases = Product.objects.annotate(year=ExtractYear('created')).values('year').order_by('-year').distinct()
+    options = [purchase['year'] for purchase in grouped_purchases]
+
+    return JsonResponse({
+        'options': options,
+    })
+
+
+@staff_member_required
+def get_sales_chart(request, year):
+    pro = Product.objects.filter(created__year=year)
+    grouped_products = pro.annotate(pro_price=F('price'))\
+        .annotate(month=ExtractMonth('created'))\
+        .values('month').annotate(average=Sum('price'))\
+        .values('month', 'average').order_by('month')
+
+    sales_dict = get_year_dict()
+
+    for group in grouped_products:
+        sales_dict[months[group['month'] - 1]] = round(group['average'], 2)
+
+    return JsonResponse({
+        'title': f'Price in {year}',
+        'data': {
+            'labels': list(sales_dict.keys()),
+            'datasets': [{
+                'label': 'Amount ($)',
+                'backgroundColor': colorPrimary,
+                'borderColor': colorPrimary,
+                'data': list(sales_dict.values())
+            }]
+        }
+    })
+
 # def product_detail(request, id, productName):
 #     product = get_object_or_404(ingredientItem,
 #                                 id=id,
@@ -201,3 +246,4 @@ def user_login(request):
 #         'product': product,
 #         'cart_product_form': cart_product_form}
 #     )
+

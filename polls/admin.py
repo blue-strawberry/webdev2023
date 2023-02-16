@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Post, Comment, Recipe, Category, Product
+from .models import Post, Comment, Recipe, Category, Product, Visual
 
 
 class PostAdmin(admin.ModelAdmin):
@@ -35,3 +35,4 @@ admin.site.register(Comment, CommentAdmin)
 admin.site.register(Post, PostAdmin)
 # admin.site.register(ingredientItem)
 admin.site.register(Recipe)
+admin.site.register(Visual)
