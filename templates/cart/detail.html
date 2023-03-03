@@ -4,16 +4,16 @@
     Your shopping cart
 {% endblock %}
 {% block content %}
-    <h1>Your shopping cart</h1>
+    <h1>Ваша корзина</h1>
     <table class="cart">
         <thead>
         <tr>
-            <th>Image</th>
-            <th>Product</th>
-            <th>Quantity</th>
-            <th>Remove</th>
-            <th>Unit price</th>
-            <th>Price</th>
+            <th>Изображение</th>
+            <th>Продукт</th>
+            <th>Качество</th>
+            <th>Удалить</th>
+            <th>Цена за ед. количество товара</th>
+            <th>Итого</th>
         </tr>
         </thead>
         <tbody>
@@ -27,7 +27,8 @@
                                     {{ product.image.url }}
                                 {% else %}
                                     {% static "img/no_image.png" %}
-                                {% endif %}">
+                                {% endif %}"
+                            style="width: 200px; height: 200px;">
                         </a>
                     </td>
                     <td>{{ product.name }}</td>
@@ -70,13 +71,7 @@
         {% csrf_token %}
     </form>
     <p class="text-right">
-        <a href="{% url "polls:products" %}" class="button light">Continue shopping</a>
-        <a href="{% url "orders:order_create" %}" class="button">Checkout</a>
+        <a href="{% url "polls:products" %}" class="button light">Вернуться к покупке</a>
+        <a href="{% url "orders:order_create" %}" class="button">Оформить заказ</a>
     </p>
-{#    <p class="price">${{ product.price }}</p>#}
-{#    <form action="{% url "cart:cart_add" product.id %}" method="post">#}
-{#        {{ cart_product_form }}#}
-{#        {% csrf_token %}#}
-{#        <input type="submit" value="Add to cart">#}
-{#    </form>#}
 {% endblock %}

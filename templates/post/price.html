@@ -5,7 +5,7 @@
 
 {% block content %}
     {% if recipes %}
-<h1>Recipes:</h1>
+<h1>Рецепты:</h1>
 {% for recipe in recipes %}
 <div class="card my-4" style="width: 18rem;">
   <div class="card-body">
@@ -16,7 +16,6 @@
     <h6 class="card-subtitle mb-2 text-muted">
       {{ recipe.updated_at|date:"F d, Y" }}
     </h6>
-{#    <a href="{{ recipe.get_absolute_url }}" class="card-link">View Recipe</a>#}
   </div>
 </div>
 
@@ -24,11 +23,11 @@
 <!-- -->
     {% endif %}
     <div>
-    <h2>Add a new recipe</h2>
+    <h2>Добавить новый рецепт</h2>
     <form action="{% url 'polls:recipe' %}" method="post">
         {{ recipe_create.as_p }}
         {% csrf_token %}
-        <p><input type="submit" value="Add recipe"></p>
+        <p><input type="submit" value="Добавить рецепт"></p>
     </form>
     </div>
 {% endblock content %}

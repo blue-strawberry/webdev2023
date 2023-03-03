@@ -1,43 +1,44 @@
 {% extends "post/base.html" %}
 {% load static %}
 {% block title %}
-    {% if category %}{{ category.name }}{% else %}Products{% endif %}
+    {% if category %}{{ category.name }}{% else %}Продукты{% endif %}
 {% endblock %}
 {% block content %}
     <div id="sidebar">
-        <h3>Categories</h3>
+        <h3>Категории</h3>
         <ul>
             <li {% if not category %}class="selected"{% endif %}>
-                <a href="{% url "polls:products" %}">All</a>
+                <a href="{% url "polls:products" %}">Все</a>
             </li>
-            {% for c in categories %}
-                <li {% if category.slug == c.slug %}class="selected"{% endif %}>
-                    <a href="{{ c.get_absolute_url }}">{{ c.name }}</a>
-                </li>
-            {% endfor %}
+{#            {% for c in categories %}#}
+{#                <li {% if category.slug == c.slug %}class="selected"{% endif %}>#}
+{#                    <a href="{{ c.get_absolute_url }}">{{ c.name }}</a>#}
+{#                </li>#}
+{#            {% endfor %}#}
         </ul>
     </div>
     <div id="main" class="product-list">
-        <h1>{% if category %}{{ category.name }}{% else %}Products{% endif %}</h1>
+        <h1>{% if category %}{{ category.name }}{% else %}Продукты{% endif %}</h1>
+    {% include "pagination.html" with page=products %}
         {% for product in products %}
             <div class="card my-4" style="width: 18rem;">
-  <div class="card-body">
-   <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no_image.png" %}{% endif %}" class="card-img-top" alt="...">
-    <h5 class="card-title"><a href="{{ product.get_absolute_url }}">{{ product.name }}</a><br>
-                ${{ product.price }}</h5>
-    <h6 class="card-subtitle mb-2 text-muted">{{ recipe.author }}</h6>
-    <p class="card-text">{{ recipe.description }}</p>
-    <h6 class="card-subtitle mb-2 text-muted">
-      {{ recipe.updated_at|date:"F d, Y" }}
-    </h6>
-{#    <a href="{{ recipe.get_absolute_url }}" class="card-link">View Recipe</a>#}
-  </div>
-</div>
+            <div class="card-body">
+            <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no_image.png" %}{% endif %}" class="card-img-top" alt="...">
+            <h5 class="card-title"><a href="{{ product.get_absolute_url }}">{{ product.name }}</a><br>
+                    ${{ product.price }}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">{{ recipe.author }}</h6>
+            <p class="card-text">{{ recipe.description }}</p>
+            <h6 class="card-subtitle mb-2 text-muted">
+            {{ recipe.updated_at|date:"F d, Y" }}
+            </h6>
+            </div>
+            </div>
         {% endfor %}
     </div>
+     {% if request.user.is_authenticated %}
     <div class="container">
       <form id="filterForm">
-        <label for="year">Choose a year:</label>
+        <label for="year">Выберите год:</label>
         <select name="year" id="year"></select>
         <input type="submit" value="Load" name="_load">
       </form>
@@ -108,4 +109,5 @@ function loadAllCharts(year) {
   });
 </script>
     </div>
+    {% endif %}
 {% endblock %}
