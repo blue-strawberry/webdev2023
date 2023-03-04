@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'cart.apps.CartConfig',
     'orders.apps.OrdersConfig',
     'coupons.apps.CouponsConfig',
+    'rest_framework',
 ]
 
 LOGIN_REDIRECT_URL = reverse_lazy('dashboard')

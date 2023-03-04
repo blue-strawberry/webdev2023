@@ -28,6 +28,7 @@
             {% block main %}
                 <a class="btn btn-primary" href="{% url "polls:home" %}" role="button">Предсказать покупку по введенной цене</a>
                 <a class="btn btn-primary" href="{% url "polls:ml" %}" role="button">Показать название изображения</a>
+                <a class="btn btn-primary" href="{% url "polls:calories" %}" role="button">Посчитать калории</a>
 {% endblock %}
         </h2>
     {% if latest_question_list %}

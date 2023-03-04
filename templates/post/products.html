@@ -17,6 +17,7 @@
 {#            {% endfor %}#}
         </ul>
     </div>
+    <a class="btn btn-primary" href="{% url "polls:search_recipes" %}" role="button">Искать различные рецепты</a>
     <div id="main" class="product-list">
         <h1>{% if category %}{{ category.name }}{% else %}Продукты{% endif %}</h1>
     {% include "pagination.html" with page=products %}

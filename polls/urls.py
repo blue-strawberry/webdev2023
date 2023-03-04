@@ -1,9 +1,8 @@
-from django.urls import path, include
+from django.urls import path
 from . import views
 from .feeds import LatestPostsFeed
 
 app_name = 'polls'
-
 urlpatterns = [
     path('', views.post_list, name='post_list'),
     path('<int:year>/<int:month>/<int:day>/<slug:post>/', views.post_detail, name='post_detail'),
@@ -13,6 +12,7 @@ urlpatterns = [
     path('<slug:category_slug>/', views.products, name='product_list_by_category'),
     path('<int:id>/<slug:slug>/', views.product_detail, name='product_detail'),
     path("recipe", views.recipe, name="recipe"),
+    path("recipes", views.post_recipe, name="all-recipes"),
     path('chart/filter-options/', views.get_filter_options, name='chart-filter-options'),
     path('chart/sales/<int:year>/', views.get_sales_chart, name='chart-sales'),
     path('polls/<int:question_id>/', views.detail, name='detail_question'),
@@ -23,4 +23,7 @@ urlpatterns = [
     path('ml', views.indexx, name="ml"),
     path('predictImage', views.predictImage, name="predictImage"),
     path('viewDataBase',views.viewDataBase,name="viewDataBase"),
+    path('search_recipes', views.search_recipes, name="search_recipes"),
+    path('subjects/', views.RecipeListView.as_view(), name='subject_list'),
+    path('calories', views.calories, name='calories'),
 ]

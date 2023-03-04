@@ -11,20 +11,27 @@ from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.http import Http404, HttpResponseRedirect
 from keras.models import load_model
+from requests import Response
+from rest_framework import status, generics
+from rest_framework.views import APIView
+
 from cart.cart import Cart
 from cart.forms import CartAddProductForm
+from . import serializer
 from .models import Post, Recipe, Category, Product, ingredientItem, Visual, Question, Choice, PredResult
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from .forms import CommentForm, RecipeCreateForm, LoginForm, PredictForm
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse
+
+from .serializer import RecipeSerializer
 from .utils import get_year_dict, months, colorPrimary
 from django.shortcuts import render
 from django.http import JsonResponse
 import pickle
 pickle_in = open('./savedModels/classifierModel.pkl', 'rb')
 classifier = pickle.load(pickle_in)
-
+from rest_framework import viewsets
 import pandas as pd
 import json
 from tensorflow import Graph
@@ -276,6 +283,37 @@ def get_filter_options(request):
     })
 
 
+@staff_member_required()
+def post_recipe(request):
+    recipes = Recipe.objects.all().values('title')
+    options = [purchase['title'] for purchase in recipes]
+    return JsonResponse({
+        'options': options,
+    })
+
+class RecipeListView(generics.ListAPIView):
+    queryset = Recipe.objects.all()
+    serializer_class = RecipeSerializer
+
+def calories(request):
+    import json
+    import requests
+    if request.method == 'POST':
+        query = request.POST['query']
+        api_url = 'https://api.api-ninjas.com/v1/nutrition?query='
+        api_request = requests.get(
+            api_url + query, headers={'X-Api-Key': 'q5Z4TtgQo2ECb5T0Mlg64Q==jb8adAfZDyw4I9WA'})
+        try:
+            api = json.loads(api_request.content)
+            print(api_request.content)
+        except Exception as e:
+            api = "oops! There was an error"
+            print(e)
+        return render(request, 'post/calories.html', {'api': api})
+    else:
+        return render(request, 'post/calories.html', {'query': 'Enter a valid query'})
+
+
 @staff_member_required
 def get_sales_chart(request, year):
     pro = Product.objects.filter(created__year=year)
@@ -389,3 +427,22 @@ def viewDataBase(request):
     listOfImagesPath = ['./media/' + i for i in listOfImages]
     context = {'listOfImagesPath': listOfImagesPath}
     return render(request, 'viewDB.html', context)
+
+
+def search_recipes(request):
+    import json
+    import requests
+    if request.method == 'POST':
+        query = request.POST['query']
+        api_url = 'https://api.api-ninjas.com/v1/recipe?query='
+        api_request = requests.get(
+            api_url + query, headers={'X-Api-Key': 'q5Z4TtgQo2ECb5T0Mlg64Q==jb8adAfZDyw4I9WA'})
+        try:
+            api = json.loads(api_request.content)
+            print(api_request.content)
+        except Exception as e:
+            api = "oops! There was an error"
+            print(e)
+        return render(request, 'post/reachResipes.html', {'api': api})
+    else:
+        return render(request, 'post/reachResipes.html', {'query': 'Enter a valid query'})
