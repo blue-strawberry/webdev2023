@@ -1,0 +1,17 @@
+{% extends "post/base.html" %}
+{% block content %}
+    <form method="POST">
+                      {%csrf_token%}
+                      <div class="input-group input-group-lg mb-5">
+                      <input type="text" name="query" class="form-control inputstyle" placeholder="" required>
+                      <button class="btn whoop" type="submit" id="button-addon2">Your attitude</button>
+                      </div>
+    </form>
+{#    <h1>{{api.0.sentiment | capfirst}}</h1>#}
+        <h1>{% if api.sentiment == 'NEGATIVE' %} {{ 'Ваше отношение негативное, мы хотели бы узнать, чем можем помочь?' }}
+        {% elif api.sentiment == 'POSITIVE' %} {{ 'Ваше отношение позитивное, ждем Вас еще!' }}
+            {% elif api.sentiment == 'NEUTRAL' %} {{ 'Ваше отношение нетральное, ждем Вас еще! Напишите нам, что не понравилось!' }}
+        {% endif %}
+        </h1>
+
+{% endblock %}

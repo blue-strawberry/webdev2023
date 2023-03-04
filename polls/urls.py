@@ -26,4 +26,5 @@ urlpatterns = [
     path('search_recipes', views.search_recipes, name="search_recipes"),
     path('subjects/', views.RecipeListView.as_view(), name='subject_list'),
     path('calories', views.calories, name='calories'),
+    path('attitude', views.attitude, name='attitude'),
 ]

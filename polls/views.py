@@ -1,6 +1,7 @@
 from pathlib import Path
 import joblib
 import numpy as np
+import requests
 from django.core.files.storage import FileSystemStorage
 from keras.api._v1.keras.preprocessing import image
 from django.contrib.auth.models import User
@@ -295,6 +296,40 @@ class RecipeListView(generics.ListAPIView):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
 
+
+def attitude(request):
+    import json
+    import requests
+    if request.method == 'POST':
+        query = request.POST['query']
+        api_url = 'https://api.api-ninjas.com/v1/sentiment?text='
+        api_request = requests.get(
+            api_url + query, headers={'X-Api-Key': 'q5Z4TtgQo2ECb5T0Mlg64Q==jb8adAfZDyw4I9WA'})
+        try:
+            api = json.loads(api_request.content)
+            print(api_request.content)
+        except Exception as e:
+            api = "oops! There was an error"
+            print(e)
+        return render(request, 'post/attitude.html', {'api': api})
+    else:
+        return render(request, 'post/attitude.html', {'query': 'Enter a valid query'})
+    # import requests
+    # if request.method == 'POST':
+    #     query = request.POST['query']
+    #     api_url = 'https://api.api-ninjas.com/v1/sentiment?text='
+    #     api_request = requests.get(
+    #         api_url + query, headers={'X-Api-Key': 'q5Z4TtgQo2ECb5T0Mlg64Q==jb8adAfZDyw4I9WA'}
+    #     )
+    #     try:
+    #         api = json.loads(api_request.content)
+    #     except Exception as e:
+    #         api = "oops! There was an error"
+    #     return render(request, 'post/attitude.html', {'api': api})
+    # else:
+    #         return render(request, 'post/attitude.html', {'query': 'Enter a valid query'})
+
+
 def calories(request):
     import json
     import requests
@@ -398,6 +433,8 @@ def indexx(request):
 
 
 def predictImage(request):
+    import json
+    import requests
     print(request)
     print(request.POST.dict())
     fileOdj = request.FILES['filePath']
@@ -419,6 +456,7 @@ def predictImage(request):
         'predictedLabel':predictedLabel
         }
     return render(request, 'homepage.html', context)
+
 
 
 def viewDataBase(request):
